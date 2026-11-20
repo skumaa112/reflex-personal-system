@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f2f1ec">
+<meta name="description" content="REFLEX — your personal journal, collections and daily decision assistant.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>REFLEX — Personal System</title>
+<style>
+:root{--paper:#f2f1ec;--panel:#fffefa;--ink:#292d30;--muted:#777d7c;--line:#d8d9d4;--red:#d93435;--redwash:#f8e7e4;--shadow:0 8px 28px #252b3010}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,textarea,select{font:inherit}button{cursor:pointer}
+.shell{max-width:1120px;margin:auto;padding:22px clamp(16px,4vw,42px) 90px}
+header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding:5px 0 18px;margin-bottom:28px}
+.brand{font-weight:850;letter-spacing:.13em;font-size:19px}.brand span,.red{color:var(--red)}
+.meta{font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.hero{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:24px}
+h1{font-size:clamp(29px,5vw,46px);line-height:1.05;letter-spacing:-.045em;margin:8px 0}
+h2{font-size:20px;letter-spacing:-.025em;margin:0 0 6px}h3{font-size:15px;margin:0}
+p{margin:5px 0;color:var(--muted)}.clock{font-variant-numeric:tabular-nums;color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.tile,.card{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:18px;box-shadow:var(--shadow)}
+.tile{min-height:132px;text-align:left;display:flex;flex-direction:column;justify-content:space-between;color:var(--ink);transition:.15s}
+.tile:hover{transform:translateY(-2px);border-color:#b9bfbb}.tile .num{color:var(--red);font-size:11px;letter-spacing:.12em}.tile strong{font-size:17px}.tile small{color:var(--muted)}
+.feature{background:var(--ink);color:#fff;border-radius:5px;padding:22px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:18px}
+.feature p{color:#c6cbc9}.feature h2{font-size:23px}
+.action{border:0;background:var(--red);color:white;padding:11px 16px;border-radius:3px;font-weight:700;letter-spacing:.04em}
+.ghost{border:1px solid var(--line);background:transparent;color:var(--ink);padding:9px 12px;border-radius:3px}
+.section{display:none}.section.active{display:block}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin:16px 0}
+input,textarea,select{width:100%;padding:11px 12px;border:1px solid var(--line);background:#fffefa;color:var(--ink);border-radius:3px;outline-color:var(--red)}
+textarea{min-height:130px;resize:vertical}
+.formrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.list{display:grid;gap:9px;margin-top:14px}.item{display:flex;justify-content:space-between;gap:14px;align-items:center;background:var(--panel);border:1px solid var(--line);padding:13px;border-radius:3px}
+.tag{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--red);font-weight:700}
+.result{margin-top:14px;padding:18px;border-left:3px solid var(--red);background:var(--redwash);display:none}.result.show{display:block}
+.back{border:0;background:none;color:var(--red);padding:0;margin-bottom:18px;font-weight:700}
+footer{margin-top:30px;padding-top:15px;border-top:1px solid var(--line);display:flex;justify-content:space-between}
+nav{position:fixed;bottom:0;left:0;right:0;background:#f2f1ecef;backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;justify-content:center;gap:4px;padding:8px max(8px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom))}
+nav button{border:0;background:transparent;padding:8px 10px;color:var(--muted);font-size:11px;letter-spacing:.04em}
+nav button.active{color:var(--red);font-weight:800}
+@media(max-width:700px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{align-items:start;flex-direction:column}.feature{align-items:start;flex-direction:column}.shell{padding-top:15px}.meta.hide-mobile{display:none}}
+@media(max-width:380px){.grid{gap:8px}.tile{padding:13px;min-height:115px}nav button{padding:8px 6px;font-size:10px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header><div class="brand">REFLEX<span>.</span></div><div class="meta">PERSONAL SYSTEM / 001</div></header>
+<main>
+<section id="home" class="section active">
+ <div class="hero"><div><div class="meta">PERSONAL OPERATING SPACE</div><h1>Good day.<br>What's next?</h1><p>Your collections, ideas and time — in one place.</p></div><div class="clock" id="clock"></div></div>
+ <div class="feature"><div><div class="meta" style="color:#f28b83">DAILY ASSISTANT</div><h2>Find something worth doing.</h2><p>Pick an activity from the things you already own.</p></div><button class="action" onclick="show('assistant')">SURPRISE ME →</button></div>
+ <div class="grid">
+  <button class="tile" onclick="show('journal')"><span class="num">01 / PERSONAL</span><strong>Journal</strong><small>Thoughts, notes & reflections</small></button>
+  <button class="tile" onclick="show('collections')"><span class="num">02 / LIBRARY</span><strong>Collections</strong><small>Games, books & hobbies</small></button>
+  <button class="tile" onclick="show('assistant')"><span class="num">03 / INTELLIGENCE</span><strong>AI assistant</strong><small>Decide, discover & explore</small></button>
+  <button class="tile" onclick="show('planner')"><span class="num">04 / DAILY OPS</span><strong>Planner</strong><small>Plans & small goals</small></button>
+  <button class="tile" onclick="show('workshop')"><span class="num">05 / WORKSHOP</span><strong>Projects</strong><small>Ideas & things in progress</small></button>
+  <button class="tile" onclick="show('about')"><span class="num">06 / SYSTEM</span><strong>System notes</strong><small>Prototype status & data</small></button>
+ </div>
+</section>
+<section id="journal" class="section">
+ <button class="back" onclick="show('home')">← HOME</button><div class="meta">01 / PERSONAL</div><h1>Journal</h1><p>A quiet place to get thoughts out of your head.</p>
+ <div class="card" style="margin-top:18px"><input id="jtitle" placeholder="Entry title (optional)"><div style="height:9px"></div><textarea id="jbody" placeholder="What's on your mind?"></textarea><div class="toolbar"><button class="action" onclick="saveJournal()">SAVE ENTRY</button><span class="meta" style="align-self:center">Stored on this device</span></div></div>
+ <div id="journals" class="list"></div>
+</section>
+<section id="collections" class="section">
+ <button class="back" onclick="show('home')">← HOME</button><div class="meta">02 / LIBRARY</div><h1>Collections</h1><p>Your owned things are the source of recommendations.</p>
+ <div class="card" style="margin-top:18px"><div class="formrow"><select id="kind"><option>Board game</option><option>Book</option><option>Hobby</option></select><input id="iname" placeholder="Name"></div><div class="formrow"><input id="players" placeholder="Players (e.g. 1–4)"><input id="minutes" placeholder="Play/read time"></div><div class="formrow"><select id="mood"><option value="Relaxed">Relaxed</option><option value="Brainy">Brainy</option><option value="Competitive">Competitive</option><option value="Adventurous">Adventurous</option><option value="Low energy">Low energy</option><option value="Any">Any mood</option></select><input id="genre" placeholder="Genre / notes"></div><button class="action" onclick="addItem()">ADD TO COLLECTION</button></div>
+ <div class="toolbar"><select id="filter" onchange="renderItems()"><option>All</option><option>Board game</option><option>Book</option><option>Hobby</option></select></div><div id="items" class="list"></div>
+</section>
+<section id="assistant" class="section">
+ <button class="back" onclick="show('home')">← HOME</button><div class="meta">03 / INTELLIGENCE</div><h1>Decision engine</h1><p>Tell REFLEX what kind of day you're having.</p>
+ <div class="card" style="margin-top:18px"><label class="meta">WHAT DO YOU WANT TO DO?</label><select id="want"><option>Anything</option><option>Board game</option><option>Book</option><option>Hobby</option></select><div class="formrow"><div><label class="meta">PLAYERS</label><select id="wantplayers"><option value="1">Solo</option><option value="2" selected>2 players</option><option value="3">3 players</option><option value="4">4 players</option><option value="5">5+ players</option></select></div><div><label class="meta">ENERGY</label><select id="energy"><option>Low energy</option><option selected>Relaxed</option><option>Brainy</option><option>Competitive</option><option>Adventurous</option></select></div></div><div class="formrow"><div><label class="meta">TIME AVAILABLE</label><select id="time"><option value="30">Under 30 min</option><option value="60" selected>30–60 min</option><option value="120">1–2 hours</option><option value="999">No limit</option></select></div><div><label class="meta">COMPLEXITY</label><select id="level"><option>Any</option><option>Easy</option><option>Medium</option><option>Heavy</option></select></div></div><button class="action" onclick="recommend()">GENERATE RECOMMENDATION →</button><div id="recommendation" class="result"></div></div>
+ <p class="meta" style="margin-top:14px">Prototype mode: recommendations use your saved catalogue and simple matching rules. A conversational AI connection can be added later.</p>
+</section>
+<section id="planner" class="section">
+ <button class="back" onclick="show('home')">← HOME</button><div class="meta">04 / DAILY OPS</div><h1>Planner</h1><p>Keep today's intentions simple.</p>
+ <div class="card" style="margin-top:18px"><input id="task" placeholder="Add a task or intention"><div class="toolbar"><button class="action" onclick="addTask()">ADD TASK</button></div></div><div id="tasks" class="list"></div>
+</section>
+<section id="workshop" class="section">
+ <button class="back" onclick="show('home')">← HOME</button><div class="meta">05 / WORKSHOP</div><h1>Workshop</h1><p>A landing pad for projects and future ideas.</p>
+ <div class="card" style="margin-top:18px"><input id="project" placeholder="Project or idea name"><div style="height:9px"></div><textarea id="projectnote" placeholder="What do you want to make, explore or learn?"></textarea><div class="toolbar"><button class="action" onclick="addProject()">SAVE PROJECT</button></div></div><div id="projects" class="list"></div>
+</section>
+<section id="about" class="section">
+ <button class="back" onclick="show('home')">← HOME</button><div class="meta">06 / SYSTEM</div><h1>System notes</h1><div class="card"><h2>REFLEX prototype 0.1</h2><p>This is an early local-first interface prototype. Your entries are stored in this browser using local storage.</p><p>It does not yet connect to a real language model, sync between devices, or encrypt your journal. Avoid putting sensitive information into this prototype.</p><p>Next: import your real collection, improve recommendation logic, add optional AI, then package as a PWA for installation.</p><button class="ghost" onclick="exportData()">EXPORT MY DATA</button> <button class="ghost" onclick="clearData()">CLEAR LOCAL DATA</button></div>
+</section>
+</main>
+<footer><span class="meta">REFLEX / PERSONAL SYSTEM</span><span class="meta">BUILD 0.1</span></footer>
+</div>
+<nav>
+<button data-page="home" class="active" onclick="show('home')">HOME</button><button data-page="journal" onclick="show('journal')">JOURNAL</button><button data-page="collections" onclick="show('collections')">LIBRARY</button><button data-page="assistant" onclick="show('assistant')">AI</button><button data-page="planner" onclick="show('planner')">PLAN</button>
+</nav>
+<script>
+const $=id=>document.getElementById(id);
+const load=(k,d=[])=>{try{return JSON.parse(localStorage.getItem('reflex_'+k))||d}catch{return d}};
+const save=(k,v)=>localStorage.setItem('reflex_'+k,JSON.stringify(v));
+function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));window.scrollTo(0,0);if(id==='journal')renderJournals();if(id==='collections')renderItems();if(id==='planner')renderTasks();if(id==='workshop')renderProjects()}
+function stamp(){return new Date().toLocaleString()}
+function saveJournal(){let body=$('jbody').value.trim();if(!body)return;let a=load('journals');a.unshift({title:$('jtitle').value.trim()||'Untitled entry',body,date:stamp()});save('journals',a);$('jtitle').value='';$('jbody').value='';renderJournals()}
+function renderJournals(){$('journals').innerHTML=load('journals').map((x,i)=>`<div class="item"><div><div class="tag">${esc(x.date)}</div><h3>${esc(x.title)}</h3><p>${esc(x.body.slice(0,150))}</p></div><button class="ghost" onclick="deleteEntry(${i})">DELETE</button></div>`).join('')||'<p>No entries yet.</p>'}
+function deleteEntry(i){let a=load('journals');a.splice(i,1);save('journals',a);renderJournals()}
+function addItem(){let name=$('iname').value.trim();if(!name)return;let a=load('items');a.push({kind:$('kind').value,name,players:$('players').value.trim(),minutes:$('minutes').value.trim(),mood:$('mood').value,genre:$('genre').value.trim()});save('items',a);$('iname').value='';$('players').value='';$('minutes').value='';$('genre').value='';renderItems()}
+function renderItems(){let f=$('filter').value;let a=load('items').filter(x=>f==='All'||x.kind===f);$('items').innerHTML=a.map(x=>`<div class="item"><div><div class="tag">${esc(x.kind)} · ${esc(x.mood)}</div><h3>${esc(x.name)}</h3><p>${esc(x.players||'Players not set')} · ${esc(x.minutes||'Time not set')} · ${esc(x.genre||'')}</p></div></div>`).join('')||'<p>Your catalogue is empty. Add a few things you own to try recommendations.</p>'}
+function recommend(){let all=load('items'),kind=$('want').value,players=+$('wantplayers').value,mood=$('energy').value,limit=+$('time').value;let candidates=all.filter(x=>(kind==='Anything'||x.kind===kind));if(kind==='Board game'){candidates=candidates.filter(x=>{let m=(x.players||'').match(/\d+/g);return !m||m.length===0||(players>=Math.min(...m.map(Number))&&players<=Math.max(...m.map(Number)))})}candidates=candidates.filter(x=>!x.minutes||!(/\d+/.test(x.minutes))||parseInt(x.minutes)<=limit);let ranked=candidates.map(x=>({...x,score:(x.mood===mood?3:0)+(x.mood==='Any'?1:0)+(x.kind===kind?2:0)})).sort((a,b)=>b.score-a.score);let out=$('recommendation');out.classList.add('show');if(!ranked.length){out.innerHTML='<div class="tag">NO MATCH FOUND</div><h2>Your catalogue needs more options.</h2><p>Add some owned books, games or hobbies, then try again. REFLEX only recommends things in your collection.</p>';return}let pick=ranked[Math.floor(Math.random()*Math.min(3,ranked.length))];out.innerHTML=`<div class="tag">YOUR SUGGESTED ACTIVITY</div><h2>${esc(pick.name)}</h2><p>${esc(pick.kind)} · ${esc(pick.mood)} mood</p><p>${esc(pick.genre||'A pick from your collection.')} ${pick.minutes?'· '+esc(pick.minutes):''}</p><p>Why this one: it matches your selected activity and is a good fit for the mood you chose.</p>`}
+function addTask(){let v=$('task').value.trim();if(!v)return;let a=load('tasks');a.push({v,done:false});save('tasks',a);$('task').value='';renderTasks()}
+function renderTasks(){$('tasks').innerHTML=load('tasks').map((x,i)=>`<div class="item"><label><input type="checkbox" style="width:auto" ${x.done?'checked':''} onchange="toggleTask(${i})"> <span style="${x.done?'text-decoration:line-through;color:#888':''}">${esc(x.v)}</span></label><button class="ghost" onclick="removeTask(${i})">×</button></div>`).join('')||'<p>No plans yet.</p>'}
+function toggleTask(i){let a=load('tasks');a[i].done=!a[i].done;save('tasks',a);renderTasks()}function removeTask(i){let a=load('tasks');a.splice(i,1);save('tasks',a);renderTasks()}
+function addProject(){let name=$('project').value.trim();if(!name)return;let a=load('projects');a.unshift({name,note:$('projectnote').value.trim(),date:stamp()});save('projects',a);$('project').value='';$('projectnote').value='';renderProjects()}
+function renderProjects(){$('projects').innerHTML=load('projects').map(x=>`<div class="item"><div><div class="tag">${esc(x.date)}</div><h3>${esc(x.name)}</h3><p>${esc(x.note)}</p></div></div>`).join('')||'<p>No projects yet.</p>'}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function exportData(){let data={journals:load('journals'),items:load('items'),tasks:load('tasks'),projects:load('projects')};let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='reflex-backup.json';a.click();URL.revokeObjectURL(a.href)}
+function clearData(){if(confirm('Delete all REFLEX data stored in this browser?')){['journals','items','tasks','projects'].forEach(k=>localStorage.removeItem('reflex_'+k));location.reload()}}
+function tick(){$('clock').textContent=new Date().toLocaleString([], {weekday:'short',hour:'2-digit',minute:'2-digit'})}
+tick();setInterval(tick,30000);
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body></html>
